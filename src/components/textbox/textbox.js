@@ -1,0 +1,84 @@
+import React, {Component} from 'react';
+import {connect} from 'react-redux';
+import Button from '@material-ui/core/Button';
+import TextFieldsIcon from '@material-ui/icons/TextFields';
+import InputLabel from '@material-ui/core/InputLabel';
+import MenuItem from '@material-ui/core/MenuItem';
+import FormHelperText from '@material-ui/core/FormHelperText';
+import FormControl from '@material-ui/core/FormControl';
+import Select from '@material-ui/core/Select';
+import {fabric} from 'fabric';
+import Typography from '@material-ui/core/Typography';
+import Slider from '@material-ui/core/Slider';
+import { withTheme } from '@material-ui/core';
+import textAdded from '../../action/action'
+
+class TextAll extends Component{
+    constructor(props){
+        super(props);
+        this.addText = () => {
+            this.props.textAdded("TEXT ADDED");
+            console.log(this.props.textAdded("TEXT ADDED"))
+        }
+    }
+    componentDidMount(){
+        
+    }
+    render(){
+        return(
+            <div>
+                <div style = {{"display": "none"}} id = "textMenu">
+                    <FormControl>
+                        <InputLabel id="demo-simple-select-label">Fonts</InputLabel>
+                        <Select
+                        labelId="demo-simple-select-label"
+                        id="demo-simple-select"
+                        onChange={this.handleChange}
+                        >
+                            <MenuItem value={"Times New Roman"}>Times New Roman</MenuItem>
+                            <MenuItem value={"Arial"}>Arial</MenuItem>
+                            <MenuItem value={"Pacifico"}>Pacifico</MenuItem>
+                        </Select>
+                    </FormControl>
+                    <Button variant = "contained" onClick = {this.italic}>
+                        Italic
+                    </Button>
+                    <Button variant = "contained" onClick = {this.bold}>
+                        Bold
+                    </Button>
+                    <Button variant = "contained" onClick = {this.underline}>
+                        Underline
+                    </Button>
+                    <Button variant = "contained" onClick = {this.shadow}>
+                        Shadow
+                    </Button>
+                    <Button variant = "contained" onClick = {this.fill}>
+                        Fill
+                    </Button>
+                    <div>
+                        <Typography id="discrete-slider" gutterBottom>
+                            Font Size
+                        </Typography>
+                        <Slider
+                            defaultValue={30}
+                            aria-labelledby="continuous-slider"
+                            valueLabelDisplay="auto"
+                            min={10}
+                            max={100}
+                            onChange={this.changeFontSize}
+                        />
+                    </div>
+                </div>
+                <Button variant = "contained"
+                startIcon={<TextFieldsIcon />}
+                onClick = {this.addText}>
+                </Button>
+            </div>
+        )
+        
+    }
+}
+
+const mapDispatchToProps = {textAdded}
+
+export default connect(null, mapDispatchToProps)(TextAll)
