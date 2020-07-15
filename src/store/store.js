@@ -27,7 +27,25 @@ const selectObjectReducer = (state = "", action) => {
 }
 const textboxReducer = (state = "", action) => {
     if(action.type === TEXTBOX_EVENT){
-        return action.payload;
+        switch(action.payload){
+            case "BOLD":case "ITALIC":
+                if (state === action.payload){
+                    return "NORMAL";
+                }
+                else return action.payload;
+                break;
+            case "UNDERLINE":
+                if (state === action.payload){
+                    return "NOUNDERLINE"
+                }
+                else{
+                    return "UNDERLINE"
+                }
+                break;
+            default:
+                return state
+        }
+        
     }
     else return state;
 } 

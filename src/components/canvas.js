@@ -67,6 +67,12 @@ class Canvas extends Component{
                 break;
             case TEXTBOX_EVENT:
                 switch(this.props.textboxEvent){
+                    case "NORMAL":
+                        this.canvas.getActiveObject().set({
+                            fontWeight: "normal"
+                        });
+                        this.canvas.renderAll();
+                        break;
                     case "ITALIC":
                         this.canvas.getActiveObject().set({
                             fontWeight: "italic"
@@ -81,7 +87,13 @@ class Canvas extends Component{
                         break;
                     case "UNDERLINE":
                         this.canvas.getActiveObject().set({
-                            underline: !this.canvas.getActiveObject().underline,
+                            underline: true,
+                        });
+                        this.canvas.renderAll();
+                        break;
+                    case "NOUNDERLINE":
+                        this.canvas.getActiveObject().set({
+                            underline: false,
                         });
                         this.canvas.renderAll();
                         break;
