@@ -11,8 +11,8 @@ import {fabric} from 'fabric';
 import Typography from '@material-ui/core/Typography';
 import Slider from '@material-ui/core/Slider';
 import { withTheme } from '@material-ui/core';
-import {textAdded} from '../../action/actioncreaters'
-import { OBJECT_SELECTED } from '../../action/action';
+import {textAdded, textboxEvent} from '../../action/actioncreaters'
+import { OBJECT_SELECTED, SELECTION_CLEARED } from '../../action/action';
 
 class TextAll extends Component{
     constructor(props){
@@ -21,15 +21,31 @@ class TextAll extends Component{
         this.addText = () => {
             this.props.textAdded("TEXT ADDED");
         }
+        this.italic = () => {
+            this.props.textboxEvent("ITALIC");
+        }
+        this.bold = () => {
+            this.props.textboxEvent("BOLD");
+        }
+        this.underline = () => {
+            this.props.textboxEvent("UNDERLINE");
+        }
     }
     componentDidMount(){
         
     }
     componentDidUpdate(){
-        if(this.props.actionPerformed === OBJECT_SELECTED){
-            if(this.props.selectedObject === "textbox"){
-                this.textboxRef.current.style.display = "block";
-            }
+        switch(this.props.actionPerformed){
+            case OBJECT_SELECTED:
+                if(this.props.selectedObject.type === "textbox"){
+                    this.textboxRef.current.style.display = "block";
+                }
+                break;
+            case SELECTION_CLEARED:
+                this.textboxRef.current.style.display = "none"
+                break;
+            default:
+                console.log(this.props.actionPerformed)
         }
     }
     render(){
@@ -87,7 +103,7 @@ class TextAll extends Component{
     }
 }
 
-const mapDispatchToProps = {textAdded}
+const mapDispatchToProps = {textAdded, textboxEvent}
 function mapStateToProps(state){
     return ({"actionPerformed": state.actionPerformed,
              "selectedObject": state.selectedObject,

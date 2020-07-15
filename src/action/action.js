@@ -1,3 +1,5 @@
 //actions
 export const TEXT_ADDED = "TEXT_ADDED";
 export const OBJECT_SELECTED = "OBJECT_SELECTED";
+export const TEXTBOX_EVENT = "TEXTBOX_EVENT";
+export const SELECTION_CLEARED = "SELECTION_CLEARED";
