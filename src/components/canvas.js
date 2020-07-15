@@ -1,6 +1,8 @@
 import React, {Component} from 'react';
 import {connect} from 'react-redux';
 import {fabric} from 'fabric';
+import { TEXT_ADDED, OBJECT_SELECTED } from '../action/action';
+import {objectSelected} from '../action/actioncreaters'
 class Canvas extends Component{
     constructor(props){
         super(props);
@@ -64,7 +66,7 @@ class Canvas extends Component{
                 }  
             }
               
-        })
+        });
         this.canvas.on("object:modified", (e)=>{
             console.log("recentAction in e.target", "recentAction" in e.target);
 
@@ -115,9 +117,15 @@ class Canvas extends Component{
             // this.historyCounter++
             
         })
+        this.canvas.on("selection:cleared", (e) => {
+            console.log(e);
+        })
+        this.canvas.on("object:selected", (e) => {
+            this.props.objectSelected(e.target.type);
+        })
         this.canvas.on("mouse:down:before", (e) => {
             try{
-                if(e.target.selectable ===false){
+                if(e.target.selectable === false){
                     this.canvas.isDrawingMode = true;
                 }else{
                     this.canvas.isDrawingMode = false;
@@ -128,7 +136,6 @@ class Canvas extends Component{
                 }else{
                     this.canvas.isDrawingMode = false;
                 }
-                
             }  
         })
         this.canvas.on("mouse:up", (e) => {
@@ -154,12 +161,27 @@ class Canvas extends Component{
         this.canvas.renderAll();
     }
     componentDidUpdate(){
-        console.log(this.props.canvasText);
-        const text = new fabric.Textbox(this.props.canvasText, {
-            "fill": "white",
-        });
-        this.canvas.add(text);
-        this.canvas.renderAll();
+        switch(this.props.actionPerformed){
+            case TEXT_ADDED:
+                const text = new fabric.Textbox(this.props.canvasText, {
+                    "fill": "white",
+                });
+                this.canvas.add(text);
+                this.canvas.renderAll();
+                break;
+            case OBJECT_SELECTED:
+                switch(this.props.selectedObject){
+                    case "textbox":
+
+                        break;
+                    default:
+                        console.log(this.props.selectedObject);
+                }
+                break;
+            default:
+                console.log(this.props.actionPerformed);
+        }
+        
     }
     render(){
         return(
@@ -168,9 +190,12 @@ class Canvas extends Component{
         
     }
 }
+const mapDispatchToProps = {objectSelected}
 function mapStateToProps(state){
     return ({"canvasText": state.canvasText,
+             "actionPerformed": state.actionPerformed,
+             "selectedObject": state.selectedObject,
         })
     
 }
-export default connect(mapStateToProps)(Canvas)
+export default connect(mapStateToProps, mapDispatchToProps)(Canvas)

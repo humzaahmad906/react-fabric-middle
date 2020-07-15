@@ -1,8 +1,3 @@
 //actions
-const TEXT_ADDED = "TEXT_ADDED";
-//action creaters
-const textAdded = (text) => ({
-    "type": TEXT_ADDED,
-    "payload": text,
-});
-export default textAdded;
+export const TEXT_ADDED = "TEXT_ADDED";
+export const OBJECT_SELECTED = "OBJECT_SELECTED";

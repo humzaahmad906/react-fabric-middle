@@ -11,23 +11,31 @@ import {fabric} from 'fabric';
 import Typography from '@material-ui/core/Typography';
 import Slider from '@material-ui/core/Slider';
 import { withTheme } from '@material-ui/core';
-import textAdded from '../../action/action'
+import {textAdded} from '../../action/actioncreaters'
+import { OBJECT_SELECTED } from '../../action/action';
 
 class TextAll extends Component{
     constructor(props){
         super(props);
+        this.textboxRef = React.createRef()
         this.addText = () => {
             this.props.textAdded("TEXT ADDED");
-            console.log(this.props.textAdded("TEXT ADDED"))
         }
     }
     componentDidMount(){
         
     }
+    componentDidUpdate(){
+        if(this.props.actionPerformed === OBJECT_SELECTED){
+            if(this.props.selectedObject === "textbox"){
+                this.textboxRef.current.style.display = "block";
+            }
+        }
+    }
     render(){
         return(
             <div>
-                <div style = {{"display": "none"}} id = "textMenu">
+                <div ref = {this.textboxRef} style = {{"display": "none"}} id = "textMenu">
                     <FormControl>
                         <InputLabel id="demo-simple-select-label">Fonts</InputLabel>
                         <Select
@@ -80,5 +88,10 @@ class TextAll extends Component{
 }
 
 const mapDispatchToProps = {textAdded}
-
-export default connect(null, mapDispatchToProps)(TextAll)
+function mapStateToProps(state){
+    return ({"actionPerformed": state.actionPerformed,
+             "selectedObject": state.selectedObject,
+        })
+    
+}
+export default connect(mapStateToProps, mapDispatchToProps)(TextAll)
