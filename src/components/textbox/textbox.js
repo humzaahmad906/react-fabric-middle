@@ -10,43 +10,86 @@ import Select from '@material-ui/core/Select';
 import {fabric} from 'fabric';
 import Typography from '@material-ui/core/Typography';
 import Slider from '@material-ui/core/Slider';
-import { withTheme } from '@material-ui/core';
-import {textAdded, textboxEvent} from '../../action/actioncreaters'
+import TextField from '@material-ui/core/TextField';
+import {textAdded, textboxDispatcher} from '../../action/actioncreaters'
 import { OBJECT_SELECTED, SELECTION_CLEARED } from '../../action/action';
 
 class TextAll extends Component{
     constructor(props){
         super(props);
+        this.state = {
+            text: ""
+        }
+        this.update = true
         this.textboxRef = React.createRef()
+        this.textRef = React.createRef()
         this.addText = () => {
             this.props.textAdded("TEXT ADDED");
         }
         this.italic = () => {
-            this.props.textboxEvent("ITALIC");
+            this.props.textboxDispatcher({name: "ITALIC"});
         }
         this.bold = () => {
-            this.props.textboxEvent("BOLD");
+            this.props.textboxDispatcher({name: "BOLD"});
         }
         this.underline = () => {
-            this.props.textboxEvent("UNDERLINE");
+            this.props.textboxDispatcher({name: "UNDERLINE"});
         }
-    }
-    componentDidMount(){
+        this.fill = () => {
+            this.props.textboxDispatcher({name: "FILL", fillColor: "grey",});
+        }
+        this.fontFamily = (e) => {
+            this.props.textboxDispatcher({name: "FONT_FAMILY", font: e.target.value});
+        }
+        this.shadow = (e) => {
+            this.props.textboxDispatcher({name: "SHADOW", shadowColor: "red"})
+        }
+        this.changeFontSize = (e, value) => {
+            this.props.textboxDispatcher({name: "FONT_SIZE", fontSize: value,});
+        }
+        this.text = (e) => {
+            if(e.target.value !== this.state.text){
+                this.setState({text: e.target.value});
+                this.props.textboxDispatcher({name: "TEXT", text: e.target.value,})
+            }
+            
+        }
+        this.changeState = (text) => {
+            
+            this.update = false;
+            this.setState({text: text})
+
+        }
         
     }
     componentDidUpdate(){
-        switch(this.props.actionPerformed){
-            case OBJECT_SELECTED:
-                if(this.props.selectedObject.type === "textbox"){
-                    this.textboxRef.current.style.display = "block";
-                }
-                break;
-            case SELECTION_CLEARED:
-                this.textboxRef.current.style.display = "none"
-                break;
-            default:
-                console.log(this.props.actionPerformed)
+        if(this.update){
+            console.log(this.props.selectedObject.type)
+            switch(this.props.actionPerformed[this.props.actionPerformed.length-1]){
+                case OBJECT_SELECTED:
+                    if(this.props.selectedObject.type === "textbox"){
+                        this.textboxRef.current.style.display = "block";
+                        this.props.textboxEvent.forEach((item) => {
+                            if(item.selected === true){
+                                console.log(item.text);
+                                this.changeState(item.text);
+                            }
+                        })
+                    }
+                    
+                    break;
+                case SELECTION_CLEARED:
+                    this.textboxRef.current.style.display = "none"
+                    break;
+                default:
+                    console.log(this.props.actionPerformed)
+            }
         }
+        else{
+            this.update = true
+        }
+        
+        
     }
     render(){
         return(
@@ -57,7 +100,7 @@ class TextAll extends Component{
                         <Select
                         labelId="demo-simple-select-label"
                         id="demo-simple-select"
-                        onChange={this.handleChange}
+                        onChange={this.fontFamily}
                         >
                             <MenuItem value={"Times New Roman"}>Times New Roman</MenuItem>
                             <MenuItem value={"Arial"}>Arial</MenuItem>
@@ -92,6 +135,9 @@ class TextAll extends Component{
                             onChange={this.changeFontSize}
                         />
                     </div>
+                    <form noValidate autoComplete="off">
+                        <TextField id="outlined-basic" value = {this.state.text} ref = {this.textRef} onChange={this.text} label="Outlined" variant="outlined" />
+                    </form>
                 </div>
                 <Button variant = "contained"
                 startIcon={<TextFieldsIcon />}
@@ -103,10 +149,11 @@ class TextAll extends Component{
     }
 }
 
-const mapDispatchToProps = {textAdded, textboxEvent}
+const mapDispatchToProps = {textAdded, textboxDispatcher}
 function mapStateToProps(state){
     return ({"actionPerformed": state.actionPerformed,
              "selectedObject": state.selectedObject,
+             "textboxEvent": state.textboxEvent,
         })
     
 }

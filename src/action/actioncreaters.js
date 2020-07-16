@@ -1,4 +1,4 @@
-import {TEXT_ADDED, OBJECT_SELECTED, TEXTBOX_EVENT, SELECTION_CLEARED} from './action'
+import {TEXT_ADDED, OBJECT_SELECTED, TEXTBOX_EVENT, SELECTION_CLEARED, APPEND_TEXT_OBJ} from './action'
 //action creaters
 export const textAdded = (text) => ({
     "type": TEXT_ADDED,
@@ -11,10 +11,14 @@ export const objectSelected = (id, objType) => ({
         type: objType,
     }
 })
-export const textboxEvent = (act) => ({
+export const textboxDispatcher = (act) => ({
     type: TEXTBOX_EVENT,
     payload: act,
 })
 export const selectionCleared = () => ({
     type: SELECTION_CLEARED,
+})
+export const appendTextObj = (id) => ({
+    type: APPEND_TEXT_OBJ,
+    payload: id,
 })
